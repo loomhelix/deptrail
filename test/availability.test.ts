@@ -57,3 +57,42 @@ describe('availability for outside workspace packages', () => {
     assert.deepEqual(await checkOf(root), { reason: 'The lockfile lists ../../libs/ui, which pnpm-workspace.yaml does not declare' })
   })
 })
+
+describe('package manager probe', () => {
+  function runnerFailingFirst(): ProcessRunner & { calls: number } {
+    const flaky = {
+      calls: 0,
+      run: async () => {
+        flaky.calls += 1
+        if (flaky.calls === 1) return { code: 1, stdout: '', stderr: 'corepack timed out', timedOut: false, cancelled: false }
+        return { code: 0, stdout: '10.34.3\n', stderr: '', timedOut: false, cancelled: false }
+      },
+      killRunning: () => undefined,
+    }
+    return flaky
+  }
+
+  it('keeps a failed probe until it is retried, then offers actions once the manager works', async () => {
+    const flaky = runnerFailingFirst()
+    const availability = createAvailability({ repoPath: REPO_PATH, runner: flaky, env: {}, offline: false, secrets: createSecretSet() })
+    const root = rootWith({ patterns: [], importers: [] })
+    await availability.probe(root)
+    await availability.probe(root)
+    assert.deepEqual(availability.check(root), { reason: 'pnpm --version failed: corepack timed out' })
+    assert.equal(flaky.calls, 1)
+    await availability.retryFailedProbe(root)
+    assert.deepEqual(availability.check(root), { manager: { name: 'pnpm', version: '10.34.3' } })
+    assert.equal(flaky.calls, 2)
+  })
+
+  it('does not probe again on a retry when the last probe succeeded', async () => {
+    const flaky = runnerFailingFirst()
+    const availability = createAvailability({ repoPath: REPO_PATH, runner: flaky, env: {}, offline: false, secrets: createSecretSet() })
+    const root = rootWith({ patterns: [], importers: [] })
+    await availability.retryFailedProbe(root)
+    await availability.retryFailedProbe(root)
+    await availability.retryFailedProbe(root)
+    assert.equal(flaky.calls, 2)
+    assert.deepEqual(availability.check(root), { manager: { name: 'pnpm', version: '10.34.3' } })
+  })
+})

@@ -18,6 +18,7 @@ export type AvailabilityCheck = { manager: ManagerInfo } | { reason: string }
 
 export type Availability = {
   probe(root: RootGraph): Promise<void>
+  retryFailedProbe(root: RootGraph): Promise<void>
   check(root: RootGraph): AvailabilityCheck
   settled(): Promise<void>
 }
@@ -65,17 +66,24 @@ export function createAvailability(options: AvailabilityOptions): Availability {
     return probe
   }
 
+  function probe(root: RootGraph): Promise<void> {
+    const manager = managerNameOf(root)
+    if (manager === undefined || blockingReason(root, options.offline) !== undefined) return Promise.resolve()
+    const key = probeKey(root, manager)
+    let existing = probes.get(key)
+    if (existing === undefined) {
+      existing = startProbe(root, manager)
+      probes.set(key, existing)
+    }
+    return existing.done
+  }
+
   return {
-    probe(root) {
+    probe,
+    retryFailedProbe(root) {
       const manager = managerNameOf(root)
-      if (manager === undefined || blockingReason(root, options.offline) !== undefined) return Promise.resolve()
-      const key = probeKey(root, manager)
-      let probe = probes.get(key)
-      if (probe === undefined) {
-        probe = startProbe(root, manager)
-        probes.set(key, probe)
-      }
-      return probe.done
+      if (manager !== undefined && probes.get(probeKey(root, manager))?.current.state === 'failed') probes.delete(probeKey(root, manager))
+      return probe(root)
     },
     check(root) {
       const manager = managerNameOf(root)

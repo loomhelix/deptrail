@@ -25,8 +25,13 @@ function keyText(key: NodeActionsKey): string {
   return JSON.stringify([key.root, key.node, canonicalKinds(key.kinds), key.revision])
 }
 
+function revisionlessKeyText(key: NodeActionsKey): string {
+  return JSON.stringify([key.root, key.node, canonicalKinds(key.kinds)])
+}
+
 export function createNodeActionsCache(api: Pick<DeptrailApi, 'nodeActions'>, maxInFlight = DEFAULT_MAX_IN_FLIGHT): NodeActionsCache {
   const entries = new Map<string, Entry>()
+  const newestKeyText = new Map<string, string>()
   const waiting: QueuedStart[] = []
   let inFlight = 0
 
@@ -65,6 +70,10 @@ export function createNodeActionsCache(api: Pick<DeptrailApi, 'nodeActions'>, ma
       const entry: Entry = { promise: Promise.resolve(undefined as never) }
       entry.promise = request(key, text, entry)
       entries.set(text, entry)
+      const revisionless = revisionlessKeyText(key)
+      const replaced = newestKeyText.get(revisionless)
+      if (replaced !== undefined && replaced !== text) entries.delete(replaced)
+      newestKeyText.set(revisionless, text)
       return entry.promise
     },
     peek(key) {

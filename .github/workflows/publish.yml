@@ -1,0 +1,47 @@
+name: Publish
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Read the package name and version
+        id: package
+        run: |
+          echo "name=$(node -p 'require("./package.json").name')" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+      - name: Require the tag to match the package version
+        env:
+          PACKAGE_VERSION: ${{ steps.package.outputs.version }}
+        run: test "$GITHUB_REF_NAME" = "v$PACKAGE_VERSION"
+      - name: Check whether this version is already on npm
+        id: registry
+        env:
+          PACKAGE_SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
+        run: |
+          if npm view "$PACKAGE_SPEC" version > /dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$PACKAGE_SPEC is already on npm, nothing to publish"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.registry.outputs.published == 'false'
+        run: pnpm typecheck && pnpm typecheck:ui && pnpm test
+      - if: steps.registry.outputs.published == 'false'
+        run: npm publish

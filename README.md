@@ -44,8 +44,10 @@ version. Both side panels collapse to give the center more room.
 ## Usage
 
 ```
-npx deptrail [path] [--port <n>] [--no-open] [--json] [--offline]
+npx @loomhelix/deptrail [path] [--port <n>] [--no-open] [--json] [--offline]
 ```
+
+After `npm install --global @loomhelix/deptrail`, the same command is `deptrail [path] [options]`.
 
 | Argument | Meaning |
 |---|---|
@@ -54,6 +56,8 @@ npx deptrail [path] [--port <n>] [--no-open] [--json] [--offline]
 | `--no-open` | Print the viewer URL without opening a browser. |
 | `--json` | Print the normalized scan as JSON to stdout and exit, without starting the server. The output has no registry or vulnerability data, and nothing is sent over the network. |
 | `--offline` | Send no requests to registries or OSV.dev. The viewer shows the dependency trees without registry or vulnerability data, and actions are unavailable. **Resolve versions** still runs the package manager, which uses the network as it is configured to. |
+| `-h`, `--help` | Print the options and environment variables and exit. |
+| `-v`, `--version` | Print the version and exit. |
 
 | Variable | Use |
 |---|---|
@@ -394,7 +398,9 @@ cache does. Writes are atomic, and a corrupt entry is ignored and fetched again.
 
 ## Requirements
 
-- Node.js 20 or later.
+- Node.js 22 or later.
+- macOS or Linux. On Windows, deptrail cannot start pnpm or npm yet, so actions and
+  **Resolve versions** are unavailable there.
 - pnpm or npm on the `PATH` for actions and for **Resolve versions**; scanning
   lockfiles, `node_modules` and manifests needs neither. Actions use the package manager of
   the root's lockfile.

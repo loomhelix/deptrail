@@ -148,6 +148,42 @@ describe('deptrail CLI', () => {
     assert.equal(await main([monolithFixture, '--bogus'], env, captureIo().io), 2)
   })
 
+  it('points to --help when a flag is unknown', async () => {
+    const { err, io } = captureIo()
+    assert.equal(await main([monolithFixture, '--bogus'], env, io), 2)
+    assert.match(err.join(''), /--bogus[\s\S]*Run deptrail --help to see the options\./)
+  })
+
+  for (const flag of ['--help', '-h']) {
+    it(`prints the usage of every option and variable to stdout and returns 0 with ${flag}`, async () => {
+      const { out, err, opened, io } = captureIo()
+      assert.equal(await main([path.join(home, 'absent'), flag], env, io), 0)
+      const usage = out.join('')
+      assert.match(usage, /^Usage: deptrail \[path\] \[options\]\n/)
+      for (const name of ['--port <n>', '--no-open', '--json', '--offline', '-h, --help', '-v, --version', 'DEPTRAIL_CACHE_DIR', 'DEPTRAIL_OSV_URL', 'npm_config_registry', 'npm_config_userconfig']) {
+        assert.ok(usage.includes(name), `the usage names ${name}`)
+      }
+      assert.deepEqual(err, [])
+      assert.deepEqual(opened, [])
+    })
+  }
+
+  for (const flag of ['--version', '-v']) {
+    it(`prints the package version and returns 0 with ${flag}`, async () => {
+      const { out, err, io } = captureIo()
+      const { version } = JSON.parse(await readFile(packageJsonPath, 'utf8')) as { version: string }
+      assert.equal(await main([path.join(home, 'absent'), flag], env, io), 0)
+      assert.equal(out.join(''), `${version}\n`)
+      assert.deepEqual(err, [])
+    })
+  }
+
+  it('prints the usage, not the version, when both --help and --version are given', async () => {
+    const { out, io } = captureIo()
+    assert.equal(await main(['--version', '--help'], env, io), 0)
+    assert.match(out.join(''), /^Usage: deptrail/)
+  })
+
   it('reports a busy explicit port and returns 1', async () => {
     const blocker: Server = createServer()
     await new Promise<void>((resolve) => blocker.listen(0, '127.0.0.1', resolve))

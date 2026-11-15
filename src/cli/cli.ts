@@ -26,6 +26,7 @@ import { createFsReader, type FileReader } from '../sources/file-reader.ts'
 import { createGitReader } from '../sources/git-reader.ts'
 import { openBrowser } from './open-browser.ts'
 import { readPackageVersion } from './package-version.ts'
+import { USAGE_HINT, USAGE_TEXT } from './usage-text.ts'
 
 export type CliIo = {
   stdout: (text: string) => void
@@ -42,6 +43,8 @@ const OPTIONS = {
   'no-open': { type: 'boolean' },
   json: { type: 'boolean' },
   offline: { type: 'boolean' },
+  help: { type: 'boolean', short: 'h' },
+  version: { type: 'boolean', short: 'v' },
 } as const
 
 type EnrichmentSetup = {
@@ -124,8 +127,16 @@ export async function main(argv: string[], env: Record<string, string | undefine
   try {
     parsed = parseArgs({ args: argv, options: OPTIONS, allowPositionals: true })
   } catch (error) {
-    io.stderr(`${error instanceof Error ? error.message : String(error)}\n`)
+    io.stderr(`${error instanceof Error ? error.message : String(error)}\n${USAGE_HINT}\n`)
     return EXIT_USAGE
+  }
+  if (parsed.values.help) {
+    io.stdout(USAGE_TEXT)
+    return EXIT_OK
+  }
+  if (parsed.values.version) {
+    io.stdout(`${readPackageVersion()}\n`)
+    return EXIT_OK
   }
   const port = parsePort(parsed.values.port)
   if (port === null) {

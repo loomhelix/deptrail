@@ -78,6 +78,22 @@ describe('createNodeActionsCache', () => {
     assert.equal(api.calls.length, 2)
   })
 
+  it('keeps only the answer of the newest revision of a key', async () => {
+    const api = fakeApi()
+    const cache = createNodeActionsCache(api)
+    const other = cache.get(keyFor('b'))
+    const old = cache.get(keyFor('a'))
+    api.calls[0].resolve(answer)
+    api.calls[1].resolve(answer)
+    await Promise.all([other, old])
+    const newer = cache.get(keyFor('a', { revision: 'r2' }))
+    api.calls[2].resolve(answer)
+    await newer
+    assert.equal(cache.peek(keyFor('a')), undefined)
+    assert.deepEqual(cache.peek(keyFor('a', { revision: 'r2' })), answer)
+    assert.deepEqual(cache.peek(keyFor('b')), answer)
+  })
+
   it('treats the same kinds in any order as one key', () => {
     const api = fakeApi()
     const cache = createNodeActionsCache(api)

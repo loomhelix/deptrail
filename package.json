@@ -1,5 +1,5 @@
 {
-  "name": "deptrail",
+  "name": "@loomhelix/deptrail",
   "version": "0.1.0",
   "description": "Explore the dependency trees of every JavaScript root in a repository: issues, dependents and fixes in a local web viewer",
   "keywords": [
@@ -25,10 +25,13 @@
     "url": "https://github.com/loomhelix/deptrail/issues"
   },
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "packageManager": "pnpm@10.34.3",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "bin": {
     "deptrail": "dist/cli/cli.js"
@@ -57,7 +60,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
     "@playwright/test": "^1.64.1",
-    "@types/node": "^20.19.43",
+    "@types/node": "^22.20.5",
     "@types/semver": "^7.8.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "tsx": "^4.23.15",

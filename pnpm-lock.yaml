@@ -22,14 +22,14 @@ importers:
         specifier: ^1.64.1
         version: 1.64.1
       '@types/node':
-        specifier: ^20.19.43
-        version: 20.19.43
+        specifier: ^22.20.5
+        version: 22.20.5
       '@types/semver':
         specifier: ^7.8.0
         version: 7.8.0
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
-        version: 5.2.4(vite@6.4.5(@types/node@20.19.43)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.44(typescript@5.9.3))
+        version: 5.2.4(vite@6.4.5(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.44(typescript@5.9.3))
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
@@ -38,7 +38,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^6.4.5
-        version: 6.4.5(@types/node@20.19.43)(tsx@4.23.15)(yaml@2.9.1)
+        version: 6.4.5(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1)
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript@5.9.3)
@@ -538,8 +538,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/node@20.19.43':
-    resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
+  '@types/node@22.20.5':
+    resolution: {integrity: sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==}
 
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
@@ -1046,15 +1046,15 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/node@20.19.43':
+  '@types/node@22.20.5':
     dependencies:
       undici-types: 6.21.0
 
   '@types/semver@7.8.0': {}
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.4.5(@types/node@20.19.43)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.44(typescript@5.9.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.4.5(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.44(typescript@5.9.3))':
     dependencies:
-      vite: 6.4.5(@types/node@20.19.43)(tsx@4.23.15)(yaml@2.9.1)
+      vite: 6.4.5(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1)
       vue: 3.5.44(typescript@5.9.3)
 
   '@volar/language-core@2.4.15':
@@ -1307,7 +1307,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  vite@6.4.5(@types/node@20.19.43)(tsx@4.23.15)(yaml@2.9.1):
+  vite@6.4.5(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.7)
@@ -1316,7 +1316,7 @@ snapshots:
       rollup: 4.65.0
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 20.19.43
+      '@types/node': 22.20.5
       fsevents: 2.3.3
       tsx: 4.23.15
       yaml: 2.9.1

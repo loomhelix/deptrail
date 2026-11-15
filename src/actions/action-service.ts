@@ -149,7 +149,7 @@ export function createActionService(options: ActionServiceOptions): ActionServic
   return {
     track(roots) {
       if (closed) return
-      for (const root of roots) void availability.probe(root)
+      for (const root of roots) void availability.retryFailedProbe(root)
     },
     summary(root) {
       const check = availability.check(root)

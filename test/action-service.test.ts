@@ -380,6 +380,23 @@ describe('action service', () => {
     assert.deepEqual(await harness.service.nodeActions(ROOT, 'semver@5.7.2', ALL_KINDS), { unavailable: 'pnpm --version failed: corepack refused' })
   })
 
+  it('checks the package manager again when a root that failed the check is tracked again', async () => {
+    let refusing = true
+    const harness = await setup({
+      runner: (inner) => ({
+        run: async (request) => (refusing ? { code: 1, stdout: '', stderr: 'corepack refused', timedOut: false, cancelled: false } : inner.run(request)),
+        killRunning: () => inner.killRunning(),
+      }),
+    })
+    harness.service.track(harness.session.scan.roots)
+    await probed(harness.service)
+    assert.equal(harness.service.summary(harness.root()).available, false)
+    refusing = false
+    harness.service.track(harness.session.scan.roots)
+    await probed(harness.service)
+    assert.equal(harness.service.summary(harness.root()).available, true)
+  })
+
   it('lists fix and update options for a package with the published versions', async () => {
     const { service } = await ready()
     const parser = await service.nodeActions(ROOT, PARSER, ALL_KINDS)
