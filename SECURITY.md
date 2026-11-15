@@ -13,5 +13,5 @@ Do not open a public issue for it.
 Include the deptrail version (`deptrail --version`), your Node.js version and operating system,
 and the steps that reproduce the problem. You will get an answer within seven days.
 
-The [security model](README.md#security-model) in the README describes what deptrail reads,
+The [security model](docs/reference.md#security-model) in the reference describes what deptrail reads,
 what it sends over the network and what it writes.
