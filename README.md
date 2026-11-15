@@ -190,7 +190,10 @@ scanned repository. Otherwise actions stay unavailable and the panel gives the r
 root with such packages, a package outside the repository, or a lockfile importer that
 `pnpm-workspace.yaml` does not declare. deptrail runs `pnpm --version` or `npm --version` in the root
 directory, so `packageManager` and Corepack apply; otherwise the panel says why actions are
-unavailable. A safe version is a published version that is not a prerelease and is not
+unavailable. In an npm root, **Override** and a **Re-lock** of a package that another package
+requests need npm 11.2.0 or later, because older npm does not apply `overrides` to an existing
+lockfile. Node.js 22 ships with npm 10, and with it the panel gives this as the reason those
+fixes are unavailable. A safe version is a published version that is not a prerelease and is not
 affected by any advisory of the package.
 
 | Action | Offered for | What it writes |
@@ -403,7 +406,8 @@ cache does. Writes are atomic, and a corrupt entry is ignored and fetched again.
   **Resolve versions** are unavailable there.
 - pnpm or npm on the `PATH` for actions and for **Resolve versions**; scanning
   lockfiles, `node_modules` and manifests needs neither. Actions use the package manager of
-  the root's lockfile.
+  the root's lockfile. In npm roots, **Override** and most **Re-lock** fixes need npm 11.2.0 or
+  later.
 - Network access to the registries and to OSV.dev only for registry and vulnerability data;
   without it, or with `--offline`, the viewer shows the dependency trees without registry or
   vulnerability data. With `--offline`, actions are unavailable.

@@ -12,7 +12,9 @@ import { makeAdvisory, makeEnrichmentView, makeMeta } from './helpers/enrichment
 
 const PNPM_10: ManagerInfo = { name: 'pnpm', version: '10.34.3' }
 const PNPM_11: ManagerInfo = { name: 'pnpm', version: '11.0.0' }
-const NPM: ManagerInfo = { name: 'npm', version: '10.9.2' }
+const NPM: ManagerInfo = { name: 'npm', version: '11.2.0' }
+const NPM_10: ManagerInfo = { name: 'npm', version: '10.9.9' }
+const NPM_10_OVERRIDES = 'npm 10.9.9 does not apply overrides to an existing lockfile, npm 11.2.0 and later do'
 
 const FIXED_IN_5_7_3 = makeAdvisory({ id: 'GHSA-test-0001', severity: 'high', events: [{ introduced: '0' }, { fixed: '5.7.3' }] })
 const FIXED_IN_7_7_0 = makeAdvisory({ id: 'GHSA-test-0001', severity: 'high', events: [{ introduced: '0' }, { fixed: '7.7.0' }] })
@@ -206,6 +208,27 @@ describe('fixActions', () => {
     const actions = await actionsFor({ manager: NPM })
     const override = actions?.options.find((option) => option.choice === 'override')
     assert.deepEqual(override?.steps, [{ ...OVERRIDE_5_7_3, file: 'package.json#overrides' }])
+  })
+
+  it('does not offer an npm override with an npm older than 11.2.0', async () => {
+    const actions = await actionsFor({ manager: NPM_10 })
+    assert.deepEqual(actions?.options.map((option) => option.choice), ['chain'])
+    assert.deepEqual(actions?.unavailable, [{ choice: 'override', reason: NPM_10_OVERRIDES }])
+  })
+
+  it('does not offer an npm re-lock of a package that another package requests with an npm older than 11.2.0', async () => {
+    const actions = await actionsFor({ manager: NPM_10, parserRange: '^5.7.0' })
+    assert.deepEqual(actions?.options, [])
+    assert.deepEqual(actions?.unavailable, [
+      { choice: 'relock', reason: NPM_10_OVERRIDES },
+      { choice: 'override', reason: NPM_10_OVERRIDES },
+    ])
+  })
+
+  it('offers an npm re-lock of a package that only workspace packages request with an npm older than 11.2.0', async () => {
+    const root = makeGraph({ importers: { app: ['semver@5.7.2 ^5.7.0'], web: ['semver@5.7.2 ^5.7.1'] }, packages: { 'semver@5.7.2': [] } })
+    const actions = await actionsFor({ manager: NPM_10, root })
+    assert.deepEqual(actions?.options.map((option) => [option.choice, option.steps]), [['relock', [{ ...SEMVER_RELOCK, reason: 'app and web accept it' }]]])
   })
 
   it('does not offer an npm override of a direct dependency of the root package', async () => {

@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { createProcessRunner } from '../../src/adapters/command-runner.ts'
+import { NPM_LOCKFILE_OVERRIDES_VERSION, npmIgnoresLockfileOverrides } from '../../src/actions/fix-options.ts'
 import { parseManagerVersion } from '../../src/actions/overrides-location.ts'
 import { LOCKFILE_ONLY_ARGS, SANDBOX_TIMEOUT_MS, commandText } from '../../src/actions/recipes.ts'
 import type { PackageManagerName } from '../../src/actions/types.ts'
@@ -15,6 +16,14 @@ export function installedVersion(name: PackageManagerName): string | undefined {
 
 export function missingManager(name: PackageManagerName): string | undefined {
   return installedVersion(name) === undefined ? `${name} is not on PATH` : undefined
+}
+
+export function missingLockfileOverrides(name: PackageManagerName): string | undefined {
+  const missing = missingManager(name)
+  if (missing !== undefined) return missing
+  const version = installedVersion(name) as string
+  if (!npmIgnoresLockfileOverrides({ name, version })) return undefined
+  return `npm ${version} does not apply overrides to an existing lockfile, npm ${NPM_LOCKFILE_OVERRIDES_VERSION} and later do`
 }
 
 export function packageManagerEnv(workDir: string, registryUrl: string): Record<string, string | undefined> {

@@ -22,6 +22,17 @@ const ROOT_IMPORTER_ID = `${IMPORTER_PREFIX}.`
 const NO_COMMON_SAFE_VERSION = 'the requesting ranges have no safe version in common'
 const NPM_DIRECT_DEPENDENCY = 'npm does not allow an override of a direct dependency of the root package; update it instead'
 const MAJOR_JUMP = 'major jump'
+export const NPM_LOCKFILE_OVERRIDES_VERSION = '11.2.0'
+
+export function npmIgnoresLockfileOverrides(manager: ManagerInfo): boolean {
+  if (manager.name !== 'npm') return false
+  const version = semver.coerce(manager.version)
+  return version !== null && semver.lt(version, NPM_LOCKFILE_OVERRIDES_VERSION)
+}
+
+function lockfileOverridesReason(manager: ManagerInfo): string {
+  return `npm ${manager.version} does not apply overrides to an existing lockfile, npm ${NPM_LOCKFILE_OVERRIDES_VERSION} and later do`
+}
 
 function knownRanges(ranges: readonly (string | undefined)[]): string[] | undefined {
   const known = ranges.filter((range): range is string => range !== undefined)
@@ -95,6 +106,7 @@ function overrideOption(context: OptionsContext, node: PackageNode, safe: readon
   const target = overrideTarget(node.version, safe)
   if (target === undefined) return { choice: 'override', reason: `no safe version of ${node.name} above ${node.version}` }
   if (context.manager.name === 'npm' && rootDeclares(context.root, node.name)) return { choice: 'override', reason: NPM_DIRECT_DEPENDENCY }
+  if (npmIgnoresLockfileOverrides(context.manager)) return { choice: 'override', reason: lockfileOverridesReason(context.manager) }
   const step: OverrideStep = {
     kind: 'override',
     selector: `${node.name}@<${target.version}`,
@@ -111,6 +123,10 @@ async function optionOutcomes(context: OptionsContext, node: PackageNode, kind: 
   const requesting = requestingRanges(context, node, edges)
   if (kind === 'relock') {
     const target = relockTarget(requesting.map((entry) => entry.range), safe)
+    const needsLockfileOverride = edges.some((edge) => !edge.parentIsImporter)
+    if (target !== undefined && needsLockfileOverride && npmIgnoresLockfileOverrides(context.manager)) {
+      return [{ choice: 'relock', reason: lockfileOverridesReason(context.manager) }, overrideOption(context, node, safe, requesting)]
+    }
     if (target !== undefined) return [relockOption(node, target, requesting)]
     return [{ choice: 'relock', reason: NO_COMMON_SAFE_VERSION }, overrideOption(context, node, safe, requesting)]
   }

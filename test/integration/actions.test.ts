@@ -17,7 +17,7 @@ import { compareVersions } from '../../src/query/graph-diff.ts'
 import { parseRootLockfile } from '../../src/scan/build-root.ts'
 import { makeAdvisory, makeEnrichmentView, makeMeta } from '../helpers/enrichment-view.ts'
 import { startFakeNpmRegistry, type FakeNpmRegistry, type FakePackages } from '../helpers/fake-npm-registry.ts'
-import { installedVersion, lockProject, missingManager, packageManagerEnv } from '../helpers/package-managers.ts'
+import { installedVersion, lockProject, missingLockfileOverrides, missingManager, packageManagerEnv } from '../helpers/package-managers.ts'
 
 const MANAGERS: readonly PackageManagerName[] = ['pnpm', 'npm']
 const LOCKFILES: Record<PackageManagerName, string> = { pnpm: 'pnpm-lock.yaml', npm: 'package-lock.json' }
@@ -201,6 +201,7 @@ afterEach(async () => {
 for (const managerName of MANAGERS) {
   describe(`action recipes with real ${managerName}`, () => {
     const skip = missingManager(managerName)
+    const skipWithoutLockfileOverrides = missingLockfileOverrides(managerName)
 
     it('set-range moves the parent and its child to the fixed versions', { skip }, async () => {
       const project = await createProject(managerName)
@@ -216,7 +217,7 @@ for (const managerName of MANAGERS) {
       ])
     })
 
-    it('relock moves a transitive dependency and leaves only the lockfile changed', { skip }, async () => {
+    it('relock moves a transitive dependency and leaves only the lockfile changed', { skip: skipWithoutLockfileOverrides }, async () => {
       const project = await createProject(managerName, ['child-lib@1.0.1', 'helper@1.1.0'])
       await lockWith(project, { helper: '^1.0.0' })
       assert.deepEqual(versionsOf(await lockedGraph(project), 'child-lib'), ['1.0.0'])
@@ -250,7 +251,7 @@ for (const managerName of MANAGERS) {
       assert.doesNotMatch(result.written.get(project.lockfile) ?? '', /overrides/)
     })
 
-    it('override replaces the affected child version', { skip }, async () => {
+    it('override replaces the affected child version', { skip: skipWithoutLockfileOverrides }, async () => {
       const project = await createProject(managerName)
       await lockWith(project, { 'parent-lib': '1.0.0' })
       const result = await dryRun(project, (file) => [fixItem('override', [overrideChild(file)])])
