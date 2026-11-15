@@ -1,6 +1,6 @@
 {
   "name": "@loomhelix/deptrail",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Explore the dependency trees of every JavaScript root in a repository: issues, dependents and fixes in a local web viewer",
   "keywords": [
     "dependencies",
