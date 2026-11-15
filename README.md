@@ -1,5 +1,8 @@
 # deptrail
 
+[![npm](https://img.shields.io/npm/v/@loomhelix/deptrail)](https://www.npmjs.com/package/@loomhelix/deptrail)
+[![CI](https://github.com/loomhelix/deptrail/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/loomhelix/deptrail/actions/workflows/ci.yml)
+
 deptrail explores the dependency trees of a repository that holds several independent
 JavaScript roots, such as a monorepo with a few pnpm and npm projects side by side. It finds
 every root, parses each one into a normalized dependency graph and serves a local web viewer
