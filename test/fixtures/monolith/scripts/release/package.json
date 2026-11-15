@@ -1,0 +1,7 @@
+{
+  "name": "release-scripts",
+  "packageManager": "pnpm@9.0.0",
+  "dependencies": {
+    "semver": "^7.6.0"
+  }
+}

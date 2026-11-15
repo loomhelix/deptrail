@@ -1,0 +1,21 @@
+{
+  "name": "legacy-app",
+  "version": "1.0.0",
+  "lockfileVersion": 1,
+  "requires": true,
+  "dependencies": {
+    "ms": {
+      "version": "2.1.3",
+      "resolved": "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz",
+      "integrity": "sha512-glKYtZN05sWZ/vTzdkfBzTU+oRXIvEvdbKKakKVh9j66RjsESdk5z4jFnAirbABnGyNx7LObxuoMxHWEntEzug=="
+    },
+    "debug": {
+      "version": "4.3.7",
+      "resolved": "https://registry.npmjs.org/debug/-/debug-4.3.7.tgz",
+      "integrity": "sha512-gXxv6+3igqM6oiEQwRGTdeQnRwiGX4yjGNSGQeZTVH9bqbB0Ts5A9QiLezeTPlam7bWVacRcy7LrZnzQmhYRJg==",
+      "requires": {
+        "ms": "^2.1.3"
+      }
+    }
+  }
+}

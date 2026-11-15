@@ -1,0 +1,6 @@
+{
+  "name": "services-api",
+  "dependencies": {
+    "semver": "^7.6.0"
+  }
+}

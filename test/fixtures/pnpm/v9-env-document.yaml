@@ -1,0 +1,46 @@
+---
+lockfileVersion: '9.0'
+
+importers:
+
+  .:
+    configDependencies: {}
+    packageManagerDependencies:
+      pnpm:
+        specifier: 11.0.0
+        version: 11.0.0
+
+packages:
+
+  pnpm@11.0.0:
+    resolution: {integrity: sha512-7K2O3vs6lo1ydDfQmIcT7gDCVUxP7nolWayL4dsmFN2GwnK/MZYt0nuPtQ8xSnTBph1Zl1k6W1vLtYlrIF6WAw==}
+    engines: {node: '>=22.13'}
+    hasBin: true
+
+snapshots:
+
+  pnpm@11.0.0: {}
+
+---
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+
+packages:
+
+  lodash@4.17.21:
+    resolution: {integrity: sha512-fxzPxCwrTent7KYhmQeq0bJWwlz0JeL/i+kQPiTfMp16m0A2Xb0sMtBqoprlMokIPx1b6Wjvam1PKY+foW2HVQ==}
+
+snapshots:
+
+  lodash@4.17.21: {}

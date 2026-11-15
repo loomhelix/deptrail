@@ -1,0 +1,6 @@
+{
+  "name": "@fixture/build",
+  "dependencies": {
+    "read-pkg-up": "^7.0.1"
+  }
+}

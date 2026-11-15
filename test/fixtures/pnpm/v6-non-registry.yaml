@@ -1,0 +1,45 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      gitdep:
+        specifier: github:u/gitdep#1d7e288222b53a0cab90a331f1865220ec29560c
+        version: github.com/u/gitdep/1d7e288222b53a0cab90a331f1865220ec29560c
+      localdep:
+        specifier: file:../localdep
+        version: file:../localdep
+      wrapper:
+        specifier: ^1.0.0
+        version: 1.0.0
+
+packages:
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-fxzPxCwrTent7KYhmQeq0bJWwlz0JeL/i+kQPiTfMp16m0A2Xb0sMtBqoprlMokIPx1b6Wjvam1PKY+foW2HVQ==}
+    dev: false
+
+  /wrapper@1.0.0:
+    resolution: {integrity: sha512-q4pPTBLSrgrkrFwpnC8sC9hS15LdCYMt/Ll4IAyRbr7I7WKnAgU+piqVdii/lEt9ato+C6CZNeq2KPKg1wXkZQ==}
+    dependencies:
+      gitdep: github.com/u/gitdep/1d7e288222b53a0cab90a331f1865220ec29560c
+    dev: false
+
+  file:../localdep:
+    resolution: {directory: ../localdep, type: directory}
+    name: localdep
+    version: 1.0.0
+    dev: false
+
+  github.com/u/gitdep/1d7e288222b53a0cab90a331f1865220ec29560c:
+    resolution: {tarball: https://codeload.github.com/u/gitdep/tar.gz/1d7e288222b53a0cab90a331f1865220ec29560c}
+    name: gitdep
+    version: 2.0.1
+    dependencies:
+      lodash: 4.17.21
+    dev: false

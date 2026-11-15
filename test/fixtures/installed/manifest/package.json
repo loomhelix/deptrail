@@ -1,0 +1,1 @@
+{"name":"manifest-app","version":"1.0.0","dependencies":{"a":"^1.2.0"},"devDependencies":{"d":"~2.0.0"},"peerDependencies":{"p":">=1"},"optionalDependencies":{"o":"^3.0.0"}}

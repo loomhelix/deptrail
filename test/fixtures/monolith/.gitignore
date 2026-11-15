@@ -1,0 +1,4 @@
+ignored-dir/
+/generated
+# comment
+*.log

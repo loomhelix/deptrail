@@ -1,0 +1,8 @@
+.superpowers/
+node_modules/
+dist/
+.DS_Store
+test-results/
+playwright-report/
+.claude/settings.local.json
+docs/superpowers/

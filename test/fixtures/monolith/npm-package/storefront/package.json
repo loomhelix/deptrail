@@ -1,0 +1,9 @@
+{
+  "name": "@fixture/storefront",
+  "devDependencies": {
+    "eslint-plugin-vue": "^9.32.0"
+  },
+  "dependencies": {
+    "semver": "^7.6.3"
+  }
+}

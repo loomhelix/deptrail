@@ -1,0 +1,104 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      semver:
+        specifier: ^7.6.3
+        version: 7.6.3
+
+  commerce-ui:
+    dependencies:
+      '@vue/compiler-sfc':
+        specifier: ^3.5.13
+        version: 3.5.13(vue@3.5.13)
+    devDependencies:
+      eslint-plugin-vue:
+        specifier: ^9.32.0
+        version: 9.32.0(eslint@9.17.0)
+
+  storefront:
+    dependencies:
+      semver:
+        specifier: ^7.6.3
+        version: 7.6.3
+    devDependencies:
+      eslint-plugin-vue:
+        specifier: ^9.32.0
+        version: 9.32.0(eslint@9.17.0)
+
+  tools/build:
+    dependencies:
+      read-pkg-up:
+        specifier: ^7.0.1
+        version: 7.0.1
+
+packages:
+
+  '@vue/compiler-sfc@3.5.13':
+    resolution: {integrity: sha512-fixture-compiler-sfc}
+
+  eslint-plugin-vue@9.32.0:
+    resolution: {integrity: sha512-fixture-eslint-plugin-vue}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+
+  eslint@9.17.0:
+    resolution: {integrity: sha512-fixture-eslint}
+
+  normalize-package-data@2.5.0:
+    resolution: {integrity: sha512-fixture-normalize-package-data}
+
+  read-pkg-up@7.0.1:
+    resolution: {integrity: sha512-fixture-read-pkg-up}
+
+  semver@5.7.2:
+    resolution: {integrity: sha512-fixture-semver-5}
+
+  semver@7.6.3:
+    resolution: {integrity: sha512-fixture-semver-7}
+
+  vue-eslint-parser@9.4.3:
+    resolution: {integrity: sha512-fixture-vue-eslint-parser}
+    peerDependencies:
+      eslint: '>=6.0.0'
+
+  vue@3.5.13:
+    resolution: {integrity: sha512-fixture-vue}
+
+snapshots:
+
+  '@vue/compiler-sfc@3.5.13(vue@3.5.13)':
+    dependencies:
+      vue: 3.5.13
+
+  eslint-plugin-vue@9.32.0(eslint@9.17.0):
+    dependencies:
+      eslint: 9.17.0
+      vue-eslint-parser: 9.4.3(eslint@9.17.0)
+
+  eslint@9.17.0: {}
+
+  normalize-package-data@2.5.0:
+    dependencies:
+      semver: 5.7.2
+
+  read-pkg-up@7.0.1:
+    dependencies:
+      normalize-package-data: 2.5.0
+
+  semver@5.7.2: {}
+
+  semver@7.6.3: {}
+
+  vue-eslint-parser@9.4.3(eslint@9.17.0):
+    dependencies:
+      eslint: 9.17.0
+      semver: 5.7.2
+
+  vue@3.5.13: {}
