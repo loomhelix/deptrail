@@ -42,6 +42,18 @@ describe('packumentUrl', () => {
     assert.equal(packumentUrl('https://registry.npmjs.org', '@acme/ui'), 'https://registry.npmjs.org/@acme%2fui')
     assert.equal(packumentUrl('https://r.example/npm/all/', 'lodash'), 'https://r.example/npm/all/lodash')
   })
+
+  it('keeps a name from a lockfile inside one path segment below the registry', () => {
+    const base = 'https://r.example/npm/all/'
+    for (const name of ['@a/b/../../x', 'x/../../admin', '..', '.', '@../..', 'a?b#c', 'a b']) {
+      const url = new URL(packumentUrl(base, name))
+      assert.equal(url.origin, 'https://r.example', name)
+      assert.ok(url.pathname.startsWith('/npm/all/'), `${name} gave ${url.pathname}`)
+      assert.equal(url.pathname.slice('/npm/all/'.length).includes('/'), false, `${name} gave ${url.pathname}`)
+      assert.equal(url.search, '', name)
+      assert.equal(url.hash, '', name)
+    }
+  })
 })
 
 describe('fetchPackageMeta requests', () => {

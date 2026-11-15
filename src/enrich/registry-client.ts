@@ -33,9 +33,24 @@ const FAILURE_REASON_BY_KIND: Record<HttpError['kind'], string> = {
   aborted: 'request was canceled',
 }
 
+const SCOPE_PREFIX = '@'
+const ESCAPED_SCOPE_SEPARATOR = '%2f'
+
+function escapedNamePart(part: string): string {
+  const escaped = encodeURIComponent(part)
+  return /^\.+$/.test(escaped) ? escaped.replace(/\./g, '%252E') : escaped
+}
+
+function escapedPackageName(name: string): string {
+  const separator = name.indexOf('/')
+  if (!name.startsWith(SCOPE_PREFIX) || separator <= SCOPE_PREFIX.length) return escapedNamePart(name)
+  const scope = escapedNamePart(name.slice(SCOPE_PREFIX.length, separator))
+  return `${SCOPE_PREFIX}${scope}${ESCAPED_SCOPE_SEPARATOR}${encodeURIComponent(name.slice(separator + 1))}`
+}
+
 export function packumentUrl(registry: string, name: string): string {
   const base = registry.endsWith('/') ? registry : `${registry}/`
-  return `${base}${name.replace('/', '%2f')}`
+  return `${base}${escapedPackageName(name)}`
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

@@ -1,4 +1,4 @@
-import { readFile, stat } from 'node:fs/promises'
+import { open } from 'node:fs/promises'
 import path from 'node:path'
 
 export type StaticResponse = { status: number; contentType: string; body: Buffer | string }
@@ -21,12 +21,15 @@ const UI_NOT_BUILT: StaticResponse = {
 }
 
 async function readFileIfPresent(file: string): Promise<Buffer | null> {
+  let handle: Awaited<ReturnType<typeof open>> | undefined
   try {
-    const info = await stat(file)
-    if (!info.isFile()) return null
-    return await readFile(file)
+    handle = await open(file, 'r')
+    if (!(await handle.stat()).isFile()) return null
+    return await handle.readFile()
   } catch {
     return null
+  } finally {
+    await handle?.close()
   }
 }
 
