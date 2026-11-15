@@ -43,7 +43,7 @@
     "test": "node --import tsx --test test/*.test.ts",
     "test:perf": "node --import tsx --test test/perf/perf.test.ts",
     "test:integration": "node --import tsx --test test/integration/*.test.ts",
-    "build:cli": "tsc -p tsconfig.build.json",
+    "build:cli": "vite build --ssr src/cli/cli.ts --outDir dist/cli --minify esbuild --target node22",
     "build:ui": "vite build ui --outDir ../dist/ui",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "pnpm clean && pnpm build:cli && pnpm build:ui",
