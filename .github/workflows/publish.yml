@@ -20,6 +20,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - run: corepack enable
+      - name: Make the pinned pnpm the default outside this project
+        run: corepack install --global "$(node -p 'require("./package.json").packageManager')"
       - run: pnpm install --frozen-lockfile
       - name: Read the package name and version
         id: package

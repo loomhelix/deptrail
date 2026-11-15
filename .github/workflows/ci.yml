@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: corepack enable
+      - name: Make the pinned pnpm the default outside this project
+        run: corepack install --global "$(node -p 'require("./package.json").packageManager')"
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm typecheck:ui
@@ -38,6 +40,8 @@ jobs:
         with:
           node-version: '24'
       - run: corepack enable
+      - name: Make the pinned pnpm the default outside this project
+        run: corepack install --global "$(node -p 'require("./package.json").packageManager')"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm build

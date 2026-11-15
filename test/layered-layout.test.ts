@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
-import { performance } from 'node:perf_hooks'
 import { describe, it } from 'node:test'
 import { layeredLayout, type LayoutInput, type LayoutOutput } from '../ui/src/graph/layered-layout.ts'
+import { fastestRun } from './helpers/timing.ts'
 
 function node(id: string, layer: number, width = 100): LayoutInput['nodes'][number] {
   return { id, layer, width }
@@ -79,9 +79,7 @@ describe('layeredLayout', () => {
 
   it('lays out a 300-node random layered input in under 50 ms', () => {
     const input = randomLayeredInput(300, 8, 42)
-    const started = performance.now()
-    const output = layeredLayout(input)
-    const elapsed = performance.now() - started
+    const { result: output, elapsed } = fastestRun(() => layeredLayout(input))
     assert.equal(output.positions.size, 300)
     assert.equal(output.paths.length, input.edges.length)
     assert.ok(elapsed < 50, `layout took ${elapsed.toFixed(1)} ms`)

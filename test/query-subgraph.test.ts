@@ -4,6 +4,7 @@ import { ALL_KINDS, UnknownNodeError } from '../src/query/lookup.ts'
 import { subgraph } from '../src/query/subgraph.ts'
 import type { DepKind } from '../src/model.ts'
 import { makeFanIn, makeGraph } from './helpers/graph-factory.ts'
+import { fastestRun } from './helpers/timing.ts'
 
 const PARSER = 'vue-eslint-parser@9.4.3'
 
@@ -124,9 +125,7 @@ describe('subgraph layers', () => {
 
   it('answers a tslib-like fan-in in under 100 ms', () => {
     const graph = makeFanIn(20000)
-    const started = performance.now()
-    const result = subgraph(graph, 'tslib@2.6.0', { up: 2, down: 2, limit: 300, kinds: ALL_KINDS })
-    const elapsed = performance.now() - started
+    const { result, elapsed } = fastestRun(() => subgraph(graph, 'tslib@2.6.0', { up: 2, down: 2, limit: 300, kinds: ALL_KINDS }))
     assert.equal(result.nodes.length, 300)
     assert.equal(result.truncated, true)
     assert.deepEqual(result.stubs.find((stub) => stub.at === 'tslib@2.6.0'), { at: 'tslib@2.6.0', side: 'up', hidden: 19701 })

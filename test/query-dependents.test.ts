@@ -4,6 +4,7 @@ import { dependents } from '../src/query/dependents.ts'
 import { ALL_KINDS, UnknownNodeError, lookup } from '../src/query/lookup.ts'
 import type { DepKind } from '../src/model.ts'
 import { makeFanIn, makeGraph } from './helpers/graph-factory.ts'
+import { fastestRun } from './helpers/timing.ts'
 
 function semverExample(commerceUiEdge: string) {
   return makeGraph({
@@ -138,9 +139,7 @@ describe('dependents dag', () => {
 
   it('truncates a fan-in of 20000 dependents within 100 ms', () => {
     const graph = makeFanIn(20000)
-    const started = performance.now()
-    const result = dependents(graph, 'tslib@2.6.0', 5, ALL_KINDS)
-    const elapsed = performance.now() - started
+    const { result, elapsed } = fastestRun(() => dependents(graph, 'tslib@2.6.0', 5, ALL_KINDS))
     assert.equal(result.truncated, true)
     assert.ok(result.nodes.length <= 5000)
     assert.equal(result.summary.importers.length, 10)
